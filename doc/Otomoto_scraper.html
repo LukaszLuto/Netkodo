@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class Otomoto_scraper - RDoc Documentation</title>
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "./";
+  var index_rel_prefix = "./";
+</script>
+
+<script src="./js/navigation.js" defer></script>
+<script src="./js/search.js" defer></script>
+<script src="./js/search_index.js" defer></script>
+<script src="./js/searcher.js" defer></script>
+<script src="./js/darkfish.js" defer></script>
+
+<link href="./css/fonts.css" rel="stylesheet">
+<link href="./css/rdoc.css" rel="stylesheet">
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="./index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="./table_of_contents.html#pages">Pages</a>
+    <a href="./table_of_contents.html#classes">Classes</a>
+    <a href="./table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search (/) for a class, method, ..." spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    
+    
+<div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  <p class="link">Object
+</div>
+
+    
+    
+    
+<!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    <li ><a href="#method-c-new">::new</a>
+    <li ><a href="#method-i-all_offers">#all_offers</a>
+    <li ><a href="#method-i-offer">#offer</a>
+    <li ><a href="#method-i-save_images_to_pdf">#save_images_to_pdf</a>
+    <li ><a href="#method-i-save_to_csv">#save_to_csv</a>
+    <li ><a href="#method-i-scrape_cars">#scrape_cars</a>
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-Otomoto_scraper">
+  <h1 id="class-Otomoto_scraper" class="class">
+    class Otomoto_scraper
+  </h1>
+
+  <section class="description">
+    
+  </section>
+
+  <section id="5Buntitled-5D" class="documentation-section">
+
+
+
+
+
+     <section id="public-class-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+      <div id="method-c-new" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">new</span><span
+              class="method-args">(link: &quot;https://www.otomoto.pl/osobowe/bmw&quot;, max_threads: 10)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Creates a new scraper object</p>
+
+<p>Example:</p>
+
+<pre>1. With no specified link (car), the default link is &quot;https://www.otomoto.pl/osobowe/bmw&quot;
+  Otomoto_spraper.new
+
+2. With specified link
+  Otomoto_spraper.new(link: &quot;https://www.otomoto.pl/osobowe/bmw&quot;)
+
+3. With specified maximum number of simultaneously working threads, the default number is 10. It is not recommended to change this.
+  Otomoto_spraper.new(max_threads: 10)</pre>
+
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 20</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">initialize</span>(<span class="ruby-value">link:</span> <span class="ruby-string">&quot;https://www.otomoto.pl/osobowe/bmw&quot;</span>, <span class="ruby-value">max_threads:</span> <span class="ruby-value">10</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;Invalid link&#39;</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">link</span>.<span class="ruby-identifier">start_with?</span>(<span class="ruby-string">&quot;https://www.otomoto.pl/&quot;</span>)
+  <span class="ruby-keyword">begin</span>
+    <span class="ruby-ivar">@doc</span> = <span class="ruby-constant">Nokogiri</span><span class="ruby-operator">::</span><span class="ruby-constant">HTML</span>(<span class="ruby-constant">URI</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">link</span>))
+  <span class="ruby-keyword">rescue</span> <span class="ruby-constant">OpenURI</span><span class="ruby-operator">::</span><span class="ruby-constant">HTTPError</span>
+    <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;Page does not exist&#39;</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-ivar">@link</span> = <span class="ruby-identifier">link</span>
+  <span class="ruby-ivar">@car_offers</span>=[]
+  <span class="ruby-ivar">@number_of_pages</span>=<span class="ruby-ivar">@doc</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&quot;a.ooa-g4wbjr&quot;</span>).<span class="ruby-identifier">last</span>.<span class="ruby-identifier">css</span>(<span class="ruby-string">&quot;span&quot;</span>).<span class="ruby-identifier">text</span>.<span class="ruby-identifier">to_i</span>
+  <span class="ruby-ivar">@max_threads</span> = <span class="ruby-identifier">max_threads</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+     <section id="public-instance-5Buntitled-5D-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+      <div id="method-i-all_offers" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">all_offers</span><span
+              class="method-args">()</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Returns an array that contains all data (including img_url) about every offer</p>
+
+<p>Example:</p>
+
+<pre class="ruby"><span class="ruby-identifier">scraper</span> = <span class="ruby-constant">Otomoto_spraper</span>.<span class="ruby-identifier">new</span>(<span class="ruby-string">&quot;https://www.otomoto.pl/osobowe/bmw&quot;</span>)
+
+<span class="ruby-identifier">scraper</span>.<span class="ruby-identifier">all_offers</span>
+</pre>
+
+          <div class="method-source-code" id="all_offers-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 198</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">all_offers</span>
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;There are no car offers&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-identifier">result</span> = []
+  <span class="ruby-identifier">offer_no</span> = <span class="ruby-value">0</span>
+  <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">each</span> {
+    <span class="ruby-identifier">result</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">offer</span>(<span class="ruby-identifier">offer_no</span>)
+    <span class="ruby-identifier">offer_no</span> <span class="ruby-operator">+=</span> <span class="ruby-value">1</span>
+  }
+  <span class="ruby-identifier">result</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-offer" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">offer</span><span
+              class="method-args">(offer_no = 0)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Returns an array that contains all data (including img_url) about an offer</p>
+
+<p>Example:</p>
+
+<pre>scraper = Otomoto_spraper.new(&quot;https://www.otomoto.pl/osobowe/bmw&quot;)
+
+1. With no arguments, returns the first stored offer ( starts with 0 )
+  scraper.offer
+2. With given number offer_no, if possible, returns the offer_no offer, else returns an empty array
+  scraper.offer(3)</pre>
+
+          <div class="method-source-code" id="offer-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 182</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">offer</span>(<span class="ruby-identifier">offer_no</span> = <span class="ruby-value">0</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;There are no car offers&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-keyword">if</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">length</span> <span class="ruby-operator">&lt;=</span> <span class="ruby-identifier">offer_no</span>
+    []
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">car_offer</span> = <span class="ruby-ivar">@car_offers</span>[<span class="ruby-identifier">offer_no</span>]
+    [<span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">offer_name</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">quick_info</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">mileage</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">fuel_type</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">gearbox</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">year</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">localization</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">price</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">currency</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">img_url</span>]
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-save_images_to_pdf" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">save_images_to_pdf</span><span
+              class="method-args">(filename: &quot;car_offers.pdf&quot;, one_img_per_page: true)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Saves stored images into a pdf file.</p>
+
+<p>Example:</p>
+
+<pre>scraper = Otomoto_spraper.new(&quot;https://www.otomoto.pl/osobowe/bmw&quot;)
+scraper.scrape_cars(5)
+
+1. With no arguments, saves images (one image per page) into file named &quot;car_offers.pdf&quot; and overrides the file if exists
+  scraper.save_images_to_pdf
+
+2. With specified filename, saves images into given filename, overrides the file if exists
+  scraper.save_images_to_pdf(filename: &#39;new_filename.pdf&#39;)
+
+3, With one_img_per_page set to false, saves images and tries to fit as many as possible into one page
+  scraper.save_to_csv(override: false)</pre>
+
+          <div class="method-source-code" id="save_images_to_pdf-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 146</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save_images_to_pdf</span>(<span class="ruby-value">filename:</span> <span class="ruby-string">&quot;car_offers.pdf&quot;</span>, <span class="ruby-value">one_img_per_page:</span> <span class="ruby-keyword">true</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;There are no car offers&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">empty?</span>
+
+  <span class="ruby-identifier">car_offers_copy</span> = <span class="ruby-ivar">@car_offers</span>
+  <span class="ruby-constant">Prawn</span><span class="ruby-operator">::</span><span class="ruby-constant">Document</span>.<span class="ruby-identifier">generate</span>(<span class="ruby-identifier">filename</span>) <span class="ruby-keyword">do</span>
+    <span class="ruby-identifier">car_offers_copy</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">car_offer</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">begin</span>
+          <span class="ruby-identifier">url</span> = <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">img_url</span>.<span class="ruby-identifier">to_s</span>.<span class="ruby-identifier">split</span>(<span class="ruby-string">&#39;;s=&#39;</span>).<span class="ruby-identifier">first</span>
+          <span class="ruby-identifier">image_data</span> = <span class="ruby-constant">URI</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">url</span>).<span class="ruby-identifier">read</span>
+        <span class="ruby-keyword">begin</span>
+          <span class="ruby-identifier">image_string_io</span> = <span class="ruby-constant">StringIO</span>.<span class="ruby-identifier">new</span>(<span class="ruby-identifier">image_data</span>)
+          <span class="ruby-keyword">self</span>.<span class="ruby-identifier">image</span> <span class="ruby-identifier">image_string_io</span>, <span class="ruby-value">scale:</span> <span class="ruby-value">0.5</span>
+        <span class="ruby-keyword">rescue</span>
+          <span class="ruby-keyword">retry</span>
+        <span class="ruby-keyword">ensure</span>
+          <span class="ruby-identifier">image_string_io</span>.<span class="ruby-identifier">close</span> <span class="ruby-keyword">unless</span> <span class="ruby-identifier">image_string_io</span>.<span class="ruby-identifier">closed?</span>
+        <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">rescue</span>
+        <span class="ruby-identifier">text</span> <span class="ruby-string">&quot;nil&quot;</span>
+      <span class="ruby-keyword">end</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-identifier">one_img_per_page</span>
+        <span class="ruby-identifier">start_new_page</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-save_to_csv" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">save_to_csv</span><span
+              class="method-args">(override: true, filename: &quot;car_offers.csv&quot;)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Saves stored data into a csv file.</p>
+
+<p>Example:</p>
+
+<pre>scraper = Otomoto_spraper.new(&quot;https://www.otomoto.pl/osobowe/bmw&quot;)
+scraper.scrape_cars(5)
+
+1. With no arguments, saves data into file named &quot;car_offers.csv&quot; and overrides the file if exists
+  scraper.save_to_csv
+
+2. With specified filename, saves data into given filename, overrides the file if exists
+  scraper.save_to_csv(filename: &#39;new_filename.csv&#39;)
+
+3, With override set to false, saves data and does not override the file
+  scraper.save_to_csv(override: false)</pre>
+
+          <div class="method-source-code" id="save_to_csv-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">save_to_csv</span>(<span class="ruby-value">override:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">filename:</span> <span class="ruby-string">&quot;car_offers.csv&quot;</span>)
+  <span class="ruby-identifier">raise</span> <span class="ruby-string">&#39;There are no car offers&#39;</span> <span class="ruby-keyword">if</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">nil?</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">empty?</span>
+
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">override</span> <span class="ruby-operator">||</span> <span class="ruby-operator">!</span>(<span class="ruby-constant">File</span><span class="ruby-operator">::</span><span class="ruby-identifier">exist?</span>(<span class="ruby-identifier">filename</span>))
+    <span class="ruby-identifier">csv_headers</span> = [<span class="ruby-string">&quot;offer_name&quot;</span>, <span class="ruby-string">&quot;quick_info&quot;</span>, <span class="ruby-string">&quot;mileage&quot;</span>, <span class="ruby-string">&quot;fuel_type&quot;</span>, <span class="ruby-string">&quot;gearbox&quot;</span>, <span class="ruby-string">&quot;year&quot;</span>, <span class="ruby-string">&quot;localization&quot;</span>, <span class="ruby-string">&quot;price&quot;</span>, <span class="ruby-string">&quot;currency&quot;</span>]
+    <span class="ruby-identifier">csv</span> = <span class="ruby-constant">CSV</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-string">&quot;wb&quot;</span>, <span class="ruby-value">write_headers:</span> <span class="ruby-keyword">true</span>, <span class="ruby-value">headers:</span> <span class="ruby-identifier">csv_headers</span>)
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">csv</span> = <span class="ruby-constant">CSV</span>.<span class="ruby-identifier">open</span>(<span class="ruby-identifier">filename</span>, <span class="ruby-string">&quot;a+b&quot;</span>)
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-ivar">@car_offers</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">car_offer</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">csv</span> <span class="ruby-operator">&lt;&lt;</span> [<span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">offer_name</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">quick_info</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">mileage</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">fuel_type</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">gearbox</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">year</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">localization</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">price</span>, <span class="ruby-identifier">car_offer</span>.<span class="ruby-identifier">currency</span>]
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">csv</span>.<span class="ruby-identifier">close</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="method-i-scrape_cars" class="method-detail ">
+        <div class="method-header">
+          <div class="method-heading">
+            <span class="method-name">scrape_cars</span><span
+              class="method-args">(page_limit = @number_of_pages)</span>
+            <span class="method-click-advice">click to toggle source</span>
+          </div>
+        </div>
+
+        <div class="method-description">
+          <p>Fills the created object with data scraped form ‘page_limit’ pages. If page_limit is not specified, the default is set to all pages</p>
+
+<p>Example:</p>
+
+<pre>scraper = Otomoto_spraper.new(&quot;https://www.otomoto.pl/osobowe/bmw&quot;)
+
+1. With no arguments, scrapes all available pages
+  scraper.scrape_cars
+
+2. With specified page_limit, if possible, scrapes &#39;page_limit&#39; pages
+  scraper.save_to_csv(filename: &#39;new_filename.csv&#39;)</pre>
+
+          <div class="method-source-code" id="scrape_cars-source">
+            <pre><span class="ruby-comment"># File otomoto_scraper.rb, line 78</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier ruby-title">scrape_cars</span>(<span class="ruby-identifier">page_limit</span> = <span class="ruby-ivar">@number_of_pages</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">page_limit</span> <span class="ruby-operator">&gt;</span> <span class="ruby-ivar">@number_of_pages</span>
+    <span class="ruby-identifier">page_limit</span> = <span class="ruby-ivar">@number_of_pages</span>
+  <span class="ruby-keyword">end</span>
+
+  <span class="ruby-identifier">threads</span>=[]
+  <span class="ruby-identifier">thread</span> = <span class="ruby-constant">Queue</span>.<span class="ruby-identifier">new</span>
+  (<span class="ruby-value">1</span><span class="ruby-operator">..</span><span class="ruby-identifier">page_limit</span>).<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">i</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">while</span> <span class="ruby-identifier">thread</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;=</span> <span class="ruby-ivar">@max_threads</span>
+      <span class="ruby-identifier">sleep</span> <span class="ruby-value">0.1</span>
+    <span class="ruby-keyword">end</span>
+
+    <span class="ruby-identifier">thread</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-value">1</span>
+    <span class="ruby-identifier">threads</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-constant">Thread</span>.<span class="ruby-identifier">new</span> <span class="ruby-keyword">do</span>
+      <span class="ruby-keyword">begin</span>
+        <span class="ruby-identifier">scrape_page</span>(<span class="ruby-identifier">i</span>)
+      <span class="ruby-keyword">ensure</span>
+        <span class="ruby-identifier">thread</span>.<span class="ruby-identifier">pop</span>
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">threads</span>.<span class="ruby-identifier">each</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:join</span>)
+<span class="ruby-keyword">end</span></pre>
+          </div>
+        </div>
+
+
+      </div>
+
+    </section>
+
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="https://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="https://ruby.github.io/rdoc/">RDoc</a> 6.6.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-RDoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+

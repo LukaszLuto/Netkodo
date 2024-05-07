@@ -1,0 +1,30 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    bigdecimal (3.1.5)
+    csv (3.2.8)
+    matrix (0.4.2)
+    nokogiri (1.16.4-x64-mingw-ucrt)
+      racc (~> 1.4)
+    nokogiri (1.16.4-x86_64-darwin)
+      racc (~> 1.4)
+    pdf-core (0.10.0)
+    prawn (2.5.0)
+      matrix (~> 0.4)
+      pdf-core (~> 0.10.0)
+      ttfunk (~> 1.8)
+    racc (1.7.3)
+    ttfunk (1.8.0)
+      bigdecimal (~> 3.1)
+
+PLATFORMS
+  x64-mingw-ucrt
+  x86_64-darwin
+
+DEPENDENCIES
+  csv
+  nokogiri
+  prawn
+
+BUNDLED WITH
+   2.5.3
